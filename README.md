@@ -1,60 +1,30 @@
-# UsbJoy
-USB Joystick Controller 12Digital/SmartButton, 4Analog, 1Rotary, 1NeoPixel
+# IO_CAN
+CAN GPIO device (4 GPIO pins, input, output, PWM, NeoPixel, 4x ADC, 2x DAC, 5V out, 6-25V in, CAN 1Mb/s)
 
-This is a couple of circuit boards that make up a fancy USB joystick controller for FRC #2984.
-It has both a HID joystick interface and a HID uart interface (for configuration) presented to the computer (i.e. it works in Windows and Linux).  No embedded programming experience is necessary to get it to work!  It also looks like just a HID analog joystick to Windows.
+This is a circuit boards to plug into the FRC can bus, and give you 4 GPIO pins for use in software.  This should help reduce the complexity of wiring, by putting the GPIO near the device.  There is probably already CAN and power near where the sensor would need to be.
 
-To add to this readme+files:
-- mechanical drawing of the board (wid, hei, hole locations)
-- photo of driver's panel
-- update code when I'm done fiddling with stuff
-- Add pictures where appropriate (pickit programming, USB programming cable)
-- A description of how to get feedback from the robot to the leds.  Does this require a networktables application?  Or use Force-Feedback mechanisms?
-
-![image](https://github.com/user-attachments/assets/ea97f88b-f23c-439b-81eb-e5cb5ec8e4a8)
-![image](https://github.com/user-attachments/assets/5b4c13d2-de07-41db-afa2-7e9a51e008a0)
-![image](https://github.com/user-attachments/assets/e703f007-66c7-4fff-99f2-dc9885223b1f)
-<img width="397" height="770" alt="image" src="https://github.com/user-attachments/assets/d25ffc2e-d5bf-4f97-ad72-5a2e8fb099a8" />
-
+# todo:
+- Finish schematics
+- Finish firmware
+- Finish FRC Java library
 
 # Features:
-- 12 Digital inputs for buttons (3-pin White/Yellow/Green JST XH: 5V, signal with 10k pullup, GND)
-  - 12 is probably enough buttons for a FRC operator panel.  We use 2x of these on the operator panel, and 1 on the driver panel.
-  - simple buttons and switches can be used, just connect to the 'signal' and 'GND' pins of the 3-pin connector, and ignore the '5V' pin.
-- 4 Analog inputs for joysticks or linear/rotary potentiometers (10k ohms) (3-pin Blue JST XH: 5V, signal with 100k+100k pullup+pulldown, GND).
-  - 1 Analog [joystick](https://www.amazon.com/dp/B08CGYGMJL) for driving (X & Y)
-  - 2 [linear potentiometers](https://www.amazon.com/dp/B07HNY7VWC) are useful for controlling speeds or small adjustments to some positioning
-  - There are more analog input pins that could be used for more analog inputs, but that is left upto the user to figure out if they care.  But it is probably simpler/cheaper just to make more of these boards.
-- 1 Digital input can be used to drive a NeoPixel string (be careful of 500mA fuse) (3-pin Yellow)
-  - Can mimic the robots LEDs (in case you can't see the robot)
-  - Can give you feedback as to some positioning (i.e. target is to the left/right or up/down, and by how much)
-  - Can give you feedback as to if you are holding the playing piece.
-- 4-pin JST XH rotary encoder for Z-axis (600 ppr*4phase = 2400/rev resolution assumed)
-  - We use the rotary encoder to control the angle that the robot is pointing on the field.  Turn the rotary knob by 5degrees, and the robot also turns by 5degrees...
-- 4or5 extra 'virtual' buttons, 1 toggling (optional), 4 as constants
-  - 4 virtual constant buttons make it possible to distinguish between multiple controllers easily.
-  - Multiple UsbJoy boards can be distinguished from each other from the FRC Robot software (just use those constant buttons).  This means we don't have to re-arrange the joystick order in driver station.
-- Arduino Pro Micro USB-C 5V ATmega32U4 controller board used for ease of soldering.
-  - Make sure to get one with the fuse on the TOP side of the board (i.e. no bottom side components).  [amazon.com](https://www.amazon.com/gp/product/B0B6HYLC44)
-- SmartButton support for all 12 Digital inputs
-  - You can choose what each button's LED looks like for informational purposes.
-  - Flickering the button when initially pressed is simple feedback that the button should be working (commuincation to UsbJoy, LED works, button works, cable connected appropriately).
-  - Having the button light up when it should be useable is useful (i.e. the playing piece is being held, you can now press the shoot button).
-  - Have a couple of buttons light up to indicate the state of the robot.
-- 4 Digital connectors (Green) can have their 5V power switched on/off for use with simple led outputs (SmartButton requires it to always be powered on).
-  - This sounded like a great idea initially, but I don't see a use for it now...
-- ESD diodes on all 16 3-pin connectors
-- Configuration of SmartButton settings done through the USB-UART interface.
-  - Some settings are saved in EEPROM (Neopixel length, LED starting value, joystick invert axis, ...) , some are temporary (LED current values, neopixel pattern).
-  - The settings are stored in the UsbJoy's EEPROM, and are configured for that particular port.  The settings aren't saved in the SmartButton itself.
-  - You could compile different firmware for each button, and fix each button's LED functionality that way.
-- Programming of PIC micro-controller done over USB-UART with MCLRn button press required (don't have anything plugged into J8, J11, J12).
-- Programming of SmartButton PIC micro-controller over USB-UART (use a custom cable from J8+J11+J12 to SmartButton 5-pin header).
-- Colored JST-XH 3-pin connectors are available on [aliexpress.com](https://www.aliexpress.us/item/3256806937445015.html)
-- Colored JST-XH terminal 3-pin connectors are available on [aliexpress.com](https://www.aliexpress.us/item/3256804014172692.html)
-- pre-crimped 3-pin cables are available on [aliexpress.com](https://www.aliexpress.us/item/3256807213104605.html)  Just be aware that the pins have to be removed, and swapped so that it is a 1:1 cable instead of a 1:3 cable (or you are going to connect GND to 5V, and destroy your SmartButtons).
-- pre-crimped 10-pin cables are available on [amazon.com](https://www.amazon.com/dp/B0B2RCW5JF) And you would have to replace the connectors with a 3-pin version (cheap, and comes from US, so comes quickly).
-
+- CAN interface to RoboRio (1Mbit, CAN-FD mode not supported)
+- Pass-through CAN pins on 2 connectors
+- Latching connector for CAN and GPIO.
+- 4 GPIO pins (each connector has 5V,GND,GPIO,GPIO).
+- digital input/output on all 4 pins
+- 10-bit ADC input on all 4 pins
+- 8-bit DAC+OPAMP output on 2 pins
+- Neopixel output on 1 pin.  Supports 6 LED groups, and each group is a programmable number of LEDs.
+- PWM output on all 4 pins (TBD)???
+- PWM input measurement on all 4 pins (TBD)???
+- 5V @ 1A output power
+- 6V to 25V input voltage (very low current draw, except for 5V output power)
+- Reverse voltage protection on CAN and GPIO connectors.
+- Can be powered by USB or CAN connector (but don't do both, because it might back-power the USB port).
+  
+  
 # UsbJoy Connector description
 - ![image](https://github.com/user-attachments/assets/ea97f88b-f23c-439b-81eb-e5cb5ec8e4a8)
 - J1-J12 are the button inputs.  Pin 1: 5V (square pad), Pin 2: 'signal' (short to GND during button press), Pin 3: GND.
