@@ -16,6 +16,7 @@ This is a circuit boards to plug into the FRC can bus, and give you 4 GPIO pins 
 - digital input/output on all 4 pins
 - 10-bit ADC input on all 4 pins
 - 8-bit DAC+OPAMP output on 2 pins
+- AB encoder on 2 pins
 - Neopixel output on 1 pin.  Supports 6 LED groups, and each group is a programmable number of LEDs.
 - PWM output on all 4 pins (TBD)???
 - PWM input measurement on all 4 pins (TBD)???
@@ -25,48 +26,10 @@ This is a circuit boards to plug into the FRC can bus, and give you 4 GPIO pins 
 - Can be powered by USB or CAN connector (but don't do both, because it might back-power the USB port).
   
   
-# UsbJoy Connector description
-- ![image](https://github.com/user-attachments/assets/ea97f88b-f23c-439b-81eb-e5cb5ec8e4a8)
-- J1-J12 are the button inputs.  Pin 1: 5V (square pad), Pin 2: 'signal' (short to GND during button press), Pin 3: GND.
-- J7-J10 (Green connectors) can have their 5V pin switched on/off if you want to use an LED directly connected instead of a SmartButton.  They have a 100ohm series resistor for the 5V output to limit it to about 25mA (plenty for a SmartButton).
-- J12 can be setup to drive a neopixel string (a programmable strip of RGB leds).  Be aware that the max current for the string should be about 400mA, any higher and the 500mA USB fuse on the Pro Micro is likely to blow.  So for very long strings, external power should be provided for the array.
-- J13-J16 are the analog inputs.  Pin 1: 5V, Pin 2: analog signal, Pin 3: GND.
-- J17 is the encoder input.  Pin 1: 5V (square pad), Pin 2,3: A&B encoder inputs, Pin 4: GND.  Any AB encoder can be used.  The firmware is setup to make a reasonable output for a 600 pulse/revolution=2400 change/revolution encoder (i.e. Z-axis has a range of 0-2399).  You can change the 2400 limit to any other number in the code for both the Arduino and PIC to make a different resolution encoder look right.
-- J8, J11, J12 are used for PIC programming (both the UsbJoy and SmartButton PIC).
-- Button between J17 and J5 is the PIC MCLRn button that connects J8.signal to MCLRn so that it is possible to program the PIC.
-- J18 (5-pin holes on back side) is the PIC ICSP header.  Connect the PICKIT5 here.  You must disconnect PICKIT5 for normal operation.
-
-# Rotary Encoder
-- Uses a simple 4-pin {5V,A,B,GND} [encoder](https://www.amazon.com/dp/B01MZ4V1XP)
-- 600pulses/revolution * 4 edges per pulse = 2400 positions/revolution (about 1/6degree resolution)
-- Returns 0-2399 as the Z-axis to the Joystick HID interface.
-
-# SmartButton features
-- About $1 for circuit board+cpu+connector.  About $2 per illuminated arcade button.
-- Designed to solder directly to 30mm illuminated arcade buttons. [amazon EG-Starts Illuminated 30mm](https://www.amazon.com/EG-STARTS-Illuminated-Buttons-Raspberry/dp/B01N11BDX9) [Aliexpress 30mm](https://www.aliexpress.us/item/3256804217382377.html) [Coin/1P/2P](https://www.aliexpress.us/item/2251832825468632.html) [AutoRGB](https://www.aliexpress.us/item/3256805580977933.html) [50pack 28mm](https://www.aliexpress.us/item/3256805775007172.html) [Free ship $10](https://www.aliexpress.us/item/2251832849688596.html)
-- NOTE: 24mm illuminated buttons don't work, the pins are too close together and the button binds when the board is connected (unless you pre-bend the pins).  And they are only 1mm smaller diameter for the nut, so no reason to use them.
-- Other buttons could be used.  Just solder the switch pins to the button, and the LED pins to an LED+Resistor.
-- 3-pin interface (5V, signal, GND)
-- Some solder jumpers can be filled, and some jumpers cut to turn a smart button into a dumb button (i.e. no 5V present).
-- State of the led_option is stored in UsbJoy, and associated with the port.  So the buttons don't have to store their operational state.
-- Programming of pic16f15213 can be done with either PicKit5 or UsbJoy.
-- LED options
-  - 0: OFF
-  - 1: ON
-  - 2: ON for 100ms when button gets pressed
-  - 3: ON while button is pressed
-  - 4: FLASHING 100ms on/100ms off
-  - 5: SIN()
-  - 6: FLASHING while button is pressed
-  - 7: Button toggles state each time it is pressed: LED lit when in 'pressed' state
-  - 8: Button toggles state each time it is pressed: LED flashes when in 'pressed' state
-  - 9: you can add more if you want...
-
 # NeoPixel
 - Uses an off-the-shelf neopixel array (WS2812B 5V leds) [Strip_of_leds](https://www.amazon.com/dp/B09PBHJG6G) [ring_of_leds](https://www.amazon.com/dp/B08GPWVD57)
-- Takes over Digital input #11 (the Yellow connector)
-- You are going to have to make a cable that has the JST XH connector on the end of it.
-- You MUST pay attention to the current draw of the string.  The entire UsbJoy is limited to 500mA, and if you draw much more than that, the fuse will blow, and everything will stop working.  So make sure that the length of string can't draw too much power.
+- Takes over GPIO#0
+- You MUST pay attention to the current draw of the string.  The entire IO_CAN is limited to 1A, and if you draw much more than that, the fuse will blow, and everything will stop working.  So make sure that the length of string can't draw too much power.
 - Possibly add an external power connection to power the neopixel array.
 - Color choices:
   - 0x00-0x3f: Black-to-White solid color choices (4 values per R,G,B)
