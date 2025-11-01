@@ -23,3 +23,7 @@ CAN is not used for non-volatile memory programming at all (USB is used for ESP3
 -   16-bits of data for each pin {output value, pwm 16-bit pulse width in us (2ms period), neopixel 3-bit pixelgroup/12-bit RGB value, dac 8-bit}
 - System message receive
 -   robot state (match time, team color, enabled}
+
+# UART to PC messages
+- letter + 32-bit hex
+- commands for pic bits/bytes
