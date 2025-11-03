@@ -16,7 +16,7 @@ This is a circuit boards to plug into the FRC can bus, and give you 4 GPIO pins 
 - digital input/output on all 4 pins
 - 10-bit ADC input on all 4 pins
 - 8-bit DAC+OPAMP output on 2 pins
-- AB encoder on 2 pins
+- AB decoder on 2 pins
 - Neopixel output on 1 pin.  Supports 6 LED groups, and each group is a programmable number of LEDs.
 - PWM output on all 4 pins (TBD)???
 - PWM input measurement on all 4 pins (TBD)???
@@ -24,7 +24,19 @@ This is a circuit boards to plug into the FRC can bus, and give you 4 GPIO pins 
 - 6V to 25V input voltage (very low current draw, except for 5V output power)
 - Reverse voltage protection on CAN and GPIO connectors.
 - Can be powered by USB or CAN connector (but don't do both, because it might back-power the USB port).
-  
+
+
+# RGB led
+- One led is for CAN informaion {green flashing = working, red flashing = no valid can detected, blue flashing = running in match}
+- One led for status of GPIO[0,1] {xor 0&1, ADC->brightness, AB decoder lsb, DAC->brightness, direct software control}
+- one led for status of GPIO[2,3] {...}
+
+# CAN messages
+- Set RGB leds
+- Set pin mode&value {input, output 0/1, pwm width/period, pwm measure, ADC value, DAC, neopixel group/RGB, ab decoder}
+- Status of GPIO {GPIO[0] 16-bit, GPIO[1] 16-bit, GPIO[2] 16-bit, GPIO[3] 16-bit}.
+- status: AB decoder uses 32 bits.
+- status: PWM decoder reports 16-bit floating point
   
 # NeoPixel
 - Uses an off-the-shelf neopixel array (WS2812B 5V leds) [Strip_of_leds](https://www.amazon.com/dp/B09PBHJG6G) [ring_of_leds](https://www.amazon.com/dp/B08GPWVD57)
